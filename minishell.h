@@ -5,8 +5,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <string.hl>
-loolo
+# include <string.h>
 # include <sys/types.h>
 
 typedef struct s_cmd
