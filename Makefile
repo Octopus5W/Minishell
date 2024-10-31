@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRCS = 
+SRCS = cmd.c
 
 OBJS = $(SRCS:.c=.o)
 
