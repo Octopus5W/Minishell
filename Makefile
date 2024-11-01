@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRCS = cmd.c
+SRCS =  main.c cmd.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -11,7 +11,7 @@ $(NAME): $(OBJS)
 	cc -Wall -Wextra -Werror -O3 -o $@ $^ libft/libft.a -lreadline
 
 .c.o:
-	cc -Wall -Wextra -Werror -O3  -c $< 
+	cc -Wall -Wextra -Werror -O3 -g -c $< 
 
 clean:
 	rm -rf $(OBJS)
