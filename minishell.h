@@ -6,10 +6,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <sys/types.h>
-
-typedef struct s_cmd
-{
-
-} t_cmd;
+# include "readline/readline.h"
+# include "libft/libft.h"
 
 #endif
