@@ -22,7 +22,7 @@ static char    *split_path(char *path, char **s)
     return (tpath);
 }
 
-char    *cmd(char **env, char **s)
+void    cmd(char **env, char **s)
 {
     char    *path;
     int i;
@@ -39,14 +39,13 @@ char    *cmd(char **env, char **s)
         i++;
     }
     path = split_path(path, s);
-    return (path);
 }
 
-int main(int argc, char *argv[], char **env)
-{
-    char    *s[] = {"cat", "minishell.h", NULL};
+// int main(int argc, char *argv[], char **env)
+// {
+//     char    *s[] = {"cat", "minishell.h", NULL};
 
-    (void)argc;
-    (void)argv;
-    cmd(env, s);
-}
+//     (void)argc;
+//     (void)argv;
+//     cmd(env, s);
+// }

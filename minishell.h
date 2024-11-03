@@ -14,7 +14,7 @@ typedef struct s_cmd
     char    *path;
 }           t_cmd;
 
-char    *cmd(char **env, char **s);
+void    cmd(char **env, char **s);
 
 /* UTILS */
 char	**ft_split(char const *s, char c);
