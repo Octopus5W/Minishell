@@ -1,10 +1,8 @@
 int	quote_is_closed(const char *s)
 {
 	int	i;
-	int	quote;
 
 	i = -1;
-	quote = 0;
 	while (s && s[++i])
 	{
 		if (s[i] == '\'')

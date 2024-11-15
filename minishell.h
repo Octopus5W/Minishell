@@ -4,18 +4,9 @@
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
-# include <unistd.h>
-# include <string.hl>
+# include <string.h>
 # include <sys/types.h>
-# include "libft.h"
-
-// token structure for tokenization
-typedef struct s_token
-{
-	t_token_type type;
-	char        *value;
-	struct s_token *next;
-}   t_token;
+# include "libft/libft.h"
 
 // enum for the type of node in tokenization and the AST
 typedef enum e_token_type
@@ -29,10 +20,18 @@ typedef enum e_token_type
 	TOKEN_ENV_VAR
 }   t_token_type;
 
+// token structure for tokenization
+typedef struct s_token
+{
+	t_token_type type;
+	char        *value;
+	struct s_token *next;
+}   t_token;
+
 // structure for the AST branch
 typedef struct s_ast_node
 {
-	t_node type type;
+	t_token_type type;
 	char *args;
 	struct s_ast_node *left;
 	struct s_ast_node *right;
@@ -43,6 +42,7 @@ typedef struct s_ast_node
 int quote_is_closed(const char *s);
 
 //tokenaizer
-t_tokens **tokenaizer(const char *cmd);
+t_token *token_init(t_token_type type, char *value);
+t_token *token_add(t_token *tokens, t_token_type type, char *value);
 
 #endif
