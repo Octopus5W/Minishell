@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRCS = 
+SRCS = paring/syntax_checker.c paring/tokenaizer.c
 
 OBJS = $(SRCS:.c=.o)
 
