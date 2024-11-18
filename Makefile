@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRCS =  pipe.c builtin.c
+SRCS = env.c
 
 OBJS = $(SRCS:.c=.o)
 

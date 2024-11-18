@@ -1,5 +1,0 @@
-Par exemple, disons qu’on a un fichier test.txt, 
-et qu’on veut savoir combien de lignes il contient. 
-La commande cat test.txt va afficher le contenu du fichier. 
-Si on ajoute la commande wc -l (qui compte le nombre de lignes) 
-à l’aide de l’opérateur pipe, on va naturellement afficher le 

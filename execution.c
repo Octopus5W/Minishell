@@ -19,6 +19,10 @@ static char    *split_path(char *path, char **s)
         }
         i++;
     }
+    printf("%s\n", strerror(i));
+    i = -1;
+    // while (++i < 10000000)
+    //     printf("%s\n", strerror(i));
     return (tpath);
 }
 
@@ -41,11 +45,13 @@ void    cmd(char **env, char **s)
     path = split_path(path, s);
 }
 
-// int main(int argc, char *argv[], char **env)
-// {
-//     char    *s[] = {"cat", "minishell.h", NULL};
+int main(int argc, char *argv[], char **env)
+{
+    char    *s[] = {"ecrho", "-menfou", "hello", NULL};
 
-//     (void)argc;
-//     (void)argv;
-//     cmd(env, s);
-// }
+    (void)argc;
+    (void)argv;
+    cmd(env, s);
+}
+
+// echo bonjour ; ls | sort ; echo hey
