@@ -27,6 +27,7 @@ t_token	*token_add(t_token *tokens, t_token_type type, char *value)
 		return (NULL);
 	new->type = type;
 	new->value = value;
+	new->next == NULL;
 	if (!tokens || !new)
 		return (NULL);
 	while (tokens->next)
