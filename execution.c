@@ -1,57 +1,51 @@
 #include "minishell.h"
 
-static char    *split_path(char *path, char **s)
+/* Exctract and concatene the line path to use it */
+int split_path(char *path, t_data *data)
 {
-    char    **strs;
-    char    *tpath;
-    int     i;
+	char	**strs;
+	int		i;
 
-    i = 0;
-    strs = ft_split(path, ':');
-    while (strs[i])
-    {
-        tpath = ft_strjoin(strs[i], "/");
-        tpath = ft_strjoin(tpath, *s);
-        if (!access(tpath, X_OK))
-        {
-            execve(tpath, s, NULL);
-            break ;
-        }
-        i++;
-    }
-    printf("%s\n", strerror(i));
-    i = -1;
-    // while (++i < 10000000)
-    //     printf("%s\n", strerror(i));
-    return (tpath);
+	i = 0;
+	strs = ft_split(path, ':');
+	while (strs[i])
+	{
+		path = ft_strjoin(strs[i], "/");
+		path = ft_strjoin(path, *data->node->cmd);
+		if (!access(path, X_OK))
+			execve(path, data->node->cmd, NULL);
+		i++;
+	}
+	return (0);
 }
 
-void    cmd(char **env, char **s)
+/* Find the line path in env */
+int find_path(t_data *data)
 {
-    char    *path;
-    int i;
+	char	*path;
+	int		i;
 
-    i = 0;
-    path = NULL;
-    while (env[i])
-    {
-        if (!ft_strncmp(env[i], "PATH=", 5))
-        {
-            path = &env[i][5];
-            break ;
-        }
-        i++;
-    }
-    path = split_path(path, s);
+	i = 0;
+	path = NULL;
+	while (data->envdup[i])
+	{
+		if (!ft_strncmp(data->envdup[i], "PATH=", 5))
+		{
+			path = &data->envdup[i][5];
+			break ;
+		}
+		i++;
+	}
+	if (split_path(path, data))
+        return (1);
+	return (0);
 }
 
-int main(int argc, char *argv[], char **env)
+int	execution_cmd(t_data *data)
 {
-    char    *s[] = {"ecrho", "-menfou", "hello", NULL};
-
-    (void)argc;
-    (void)argv;
-    cmd(env, s);
+	if (data->isbuiltin)
+		builtins();
+    else
+        find_path(data);
+    return (0);
 }
-
-// echo bonjour ; ls | sort ; echo hey

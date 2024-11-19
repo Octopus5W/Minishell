@@ -34,7 +34,7 @@ int    echo(char **cmd)
 
     i = 1;
     if (ft_strslen(cmd) == 1)
-        return (write(1, "\n", 1), 0);
+        return (printf("\n"), 0);
     if (ft_strcmp(cmd[1], "-n"))
         if (!option(cmd))
             return (1);
@@ -51,20 +51,20 @@ int    echo(char **cmd)
 
 // ls -l | wc -l > output.txt | ls > output2.txt
 
-int main()
-{
-    // t_astnode   *node;
+// int main()
+// {
+//     // t_astnode   *node;
 
-    // node = malloc(sizeof(t_astnode));
-    // node->left = NULL;
-    // node->right = NULL;
-    // node->cmd[0] = ft_strdup("echo");
-    char    **cmd;
+//     // node = malloc(sizeof(t_astnode));
+//     // node->left = NULL;
+//     // node->right = NULL;
+//     // node->cmd[0] = ft_strdup("echo");
+//     char    **cmd;
 
-    cmd = malloc(sizeof(char *) * 3);
-    memset(cmd, 0, sizeof(char*));
-    cmd[0] = ft_strdup("echo");
-    cmd[1] = ft_strdup("-nnnnnnnnnl");
-    cmd[2] = ft_strdup("hello world");
-    echo(cmd);
-}
+//     cmd = malloc(sizeof(char *) * 3);
+//     memset(cmd, 0, sizeof(char*));
+//     cmd[0] = ft_strdup("echo");
+//     cmd[1] = ft_strdup("-nnnnnnnnnl");
+//     cmd[2] = ft_strdup("hello world");
+//     echo(cmd);
+// }

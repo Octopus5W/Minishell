@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRCS = env.c
+SRCS = init.c function_expand_var.c fake_parser.c
 
 OBJS = $(SRCS:.c=.o)
 
