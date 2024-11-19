@@ -1,6 +1,6 @@
 NAME = minishell
 
-SRCS = parsing/syntax_checker.c parsing/tokenaizer.c
+SRCS = main.c parsing/syntax_checker.c parsing/tokenaizer.c
 
 OBJS = $(SRCS:.c=.o)
 
@@ -8,10 +8,11 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	make -C libft/
-	cc -Wall -Wextra -Werror -O3 -o $@ $^ libft/libft.a -lreadline
+	mv syntax_checker.o tokenaizer.o parsing
+	cc -Wall -Wextra -Werror -o $@ $^ libft/libft.a
 
 .c.o:
-	cc -Wall -Wextra -Werror -O3  -c $< 
+	cc -Wall -Wextra -Werror -c -g $< 
 
 clean:
 	rm -rf $(OBJS)

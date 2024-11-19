@@ -1,3 +1,4 @@
+// first check
 int	quote_is_closed(const char *s)
 {
 	int	i;

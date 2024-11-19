@@ -32,17 +32,15 @@ typedef struct s_token
 typedef struct s_ast_node
 {
 	t_token_type type;
-	char *args;
+	char **args;
 	struct s_ast_node *left;
 	struct s_ast_node *right;
 }   t_ast_node;
 
-//parsing
 //syntax_checker
 int quote_is_closed(const char *s);
 
 //tokenaizer
-t_token *token_init(t_token_type type, char *value);
-t_token *token_add(t_token *tokens, t_token_type type, char *value);
+t_token	*tokenaizer(char *cmd);
 
 #endif
