@@ -17,13 +17,13 @@ char	*find_var(t_data *data, char *str)
 	return (var);
 }
 
-char	*expand_envar(t_data *data, char *var)
+char	*expand_envar(t_data *data, char *expand)
 {
 	int		i;
 	char	**tmp;
 
 	i = 0;
-	tmp = ft_split(data->str, ' ');
+	tmp = ft_split(expand, ' ');
 	if (!tmp)
 		return (NULL);
 	if (ft_strslen(tmp) > 1)
@@ -32,13 +32,13 @@ char	*expand_envar(t_data *data, char *var)
 		{
 			if (tmp[i][0] == '$')
 			{
-				var = find_var(data, tmp[i]);
+				expand = find_var(data, tmp[i]);
 				break ;
 			}
 			i++;
 		}
 	}
-	return (var);
+	return (expand);
 }
 
 // int	main(int ac, char **av, char **env)
@@ -55,3 +55,4 @@ char	*expand_envar(t_data *data, char *var)
 // 	data.str = ft_strdup("echo $HOME");
 // 	var = expand_envar(&data, var);
 // }
+

@@ -15,51 +15,70 @@
 # include <unistd.h>
 # define BUFSIZE 1024;
 
-// typedef enum e_type
-// {
-// 	PIPE,
-// 	REDIR_IN,
-// 	REDIR_OUT
-// }						t_type;
+typedef struct s_data	t_data;
 
-// typedef struct s_token
-// {
-// 	char				**cmd;
-// 	t_type				type;
-// 	struct s_token		*prev;
-// 	struct s_token		*next;
-// }						t_token;
-
-typedef struct s_astnode
+// enum for the type of node in tokenization and the AST
+typedef enum e_token_type
 {
-	char				**cmd;
-	// t_type				type;
-	char				**envdup;
-	struct s_astnode	*left;
-	struct s_astnode	*right;
-}						t_astnode;
+	TOKEN_WORD,
+	TOKEN_PIPE,
+	TOKEN_REDIR_IN,
+	TOKEN_REDIR_OUT,
+	TOKEN_REDIR_APPEND,
+	TOKEN_REDIR_HEREDOC,
+	TOKEN_ENV_VAR
+}						t_token_type;
+
+// token structure for tokenization
+typedef struct s_token
+{
+	t_token_type		type;
+	char				*value;
+	struct s_token		*next;
+}						t_token;
+
+// structure for the AST branch
+typedef struct s_ast
+{
+	t_token_type		type;
+	char				*cmd;
+	char				**args;
+	bool				isbuiltin;
+	struct s_ast_node	*left;
+	struct s_ast_node	*right;
+}						t_ast;
 
 typedef struct s_data
 {
-	char				**envdup;
-	bool				isbuiltin;
-	char				*str;
-	t_astnode			*node;
+	char **envdup; // duplicate the env variables
+	t_ast *node;   // link to t_ast node
 }						t_data;
 
-int						init(t_data *data, char **env);
-void					fake_parser(t_data *data);
-int						echo(char **cmd);
-int						execution_cmd(t_data *data);
-void					builtins(t_data *data);
-int    echo(char **cmd);
+// syntax_checker
+int						quote_is_closed(const char *s);
 
-/* UTILS */
+// tokenaizer
+t_token					*tokenaizer(char *cmd);
+t_token					*token_delete(t_token *tokens);
+t_token					*token_add(t_token *tokens, t_token_type type,
+							char *value);
+void					token_free(t_token *tokens);
+
+// init
+int						init(t_data *data, char **env);
+
+// builtin
+void					builtins(t_data *data);
+int						echo(char **cmd);
+
+// execution
+int						execution_cmd(t_data *data);
+
+// utils
 char					**ft_split(char const *s, char c);
 char					*ft_substr(char const *s, unsigned int start,
 							size_t len);
 size_t					ft_strlen(const char *s);
 int						ft_strncmp(const char *s1, const char *s2, size_t n);
 int						ft_strslen(char **strs);
-
 #endif

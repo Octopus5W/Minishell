@@ -1,10 +1,14 @@
 #include "../../include/minishell.h"
 
-int	actual_exec(char *path, char **cmd)
+int	actual_exec(char *path, char *cmd)
 {
 	pid_t	pid;
 	int		status;
+	char	**split_cmd;
 
+	split_cmd = ft_split(cmd, ' ');
+	if (!split_cmd)
+		return (1);
 	pid = fork();
 	if (pid < 0)
 	{
@@ -13,7 +17,7 @@ int	actual_exec(char *path, char **cmd)
 	}
 	else if (pid == 0)
 	{
-		if (execve(path, cmd, NULL))
+		if (execve(path, split_cmd, NULL))
 		{
 			perror("exex failed\n");
 			exit(1);
@@ -35,7 +39,7 @@ int split_path(char *path, t_data *data)
 	while (strs[i])
 	{
 		path = ft_strjoin(strs[i], "/");
-		path = ft_strjoin(path, *data->node->cmd);
+		path = ft_strjoin(path, data->node->cmd);
 		if (!access(path, X_OK))
 			actual_exec(path, data->node->cmd);
 		i++;
@@ -67,8 +71,8 @@ int find_path(t_data *data)
 
 int	execution_cmd(t_data *data)
 {
-	if (data->isbuiltin)
-		return (0); //builtins();
+	if (data->node->isbuiltin)
+		return (0); //builtins(); TO DO
     else
         find_path(data);
     return (0);

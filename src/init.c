@@ -1,18 +1,18 @@
 #include "../include/minishell.h"
 
 /* Check if the cmd in the node is a builtin */
-int check_builtins(t_data *data)
-{
-    if (!ft_strncmp(data->node->cmd[0], "echo", 4))
-        data->isbuiltin = true;
-    else if (!ft_strncmp(data->node->cmd[0], "cd", 2))
-        data->isbuiltin = true;
-    else if (!ft_strncmp(data->node->cmd[0], "pwd", 3))
-        data->isbuiltin = true;
-    // else if (!ft_strncmp(data->node->cmd[0], "env", 3))
-    //     data->isbuiltin = true;
-    return (0);
-}
+// int check_builtins(t_data *data)
+// {
+//     if (!ft_strncmp(data->node->cmd, "echo", 4))
+//         data->node->isbuiltin = true;
+//     else if (!ft_strncmp(data->node->cmd, "cd", 2))
+//         data->node->isbuiltin = true;
+//     else if (!ft_strncmp(data->node->cmd, "pwd", 3))
+//         data->node->isbuiltin = true;
+//     // else if (!ft_strncmp(data->node->cmd[0], "env", 3))
+//     //     data->isbuiltin = true;
+//     return (0);
+// }
 
 void    free_envdup(t_data *data, int i)
 {
@@ -43,8 +43,7 @@ int duplicate_env(t_data *data, char **env)
 
 int init(t_data *data, char **env)
 {
-    fake_parser(data);
-    check_builtins(data);
+    //check_builtins(data);
     if (duplicate_env(data, env))
         return (1);
     return (0);

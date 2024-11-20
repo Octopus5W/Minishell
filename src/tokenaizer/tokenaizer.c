@@ -1,4 +1,4 @@
-#include "../minishell.h"
+#include "../../include/minishell.h"
 
 //initialize token with NULL values
 t_token	*token_init(t_token_type type, char *value)
