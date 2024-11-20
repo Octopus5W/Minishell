@@ -18,7 +18,7 @@ PRINTF = ft_printf/src/ft_printf.c ft_printf/src/format.c ft_printf/src/utils.c
 
 GNL = get_next_line.c get_next_line_utils.c
 
-SRCS_ADDED = ft_free.c ft_putnbr_base.c ft_strndup.c ft_strncpy.c
+SRCS_ADDED = ft_free.c ft_putnbr_base.c ft_strndup.c ft_strncpy.c ft_strslen.c
 
 SRCS_ALL = $(SRCS) $(SRCS_BONUS) $(PRINTF) $(GNL) $(SRCS_ADDED)
 

@@ -1,6 +1,8 @@
 NAME = minishell
 
 SRCS = main.c parsing/syntax_checker.c parsing/tokenaizer.c
+SRCS = src/main.c src/init.c \
+	src/env_var/env_var.c src/execution/execution.c src/parsing/fake_parser.c 
 
 OBJS = $(SRCS:.c=.o)
 
@@ -12,7 +14,7 @@ $(NAME): $(OBJS)
 	cc -Wall -Wextra -Werror -o $@ $^ libft/libft.a
 
 .c.o:
-	cc -Wall -Wextra -Werror -c -g $< 
+	cc -Wall -Wextra -Werror -O3 -g -c $< 
 
 clean:
 	rm -rf $(OBJS)
