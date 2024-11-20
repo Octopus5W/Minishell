@@ -1,14 +1,4 @@
-#include "minishell.h"
-
-static int ft_strslen(char **strs)
-{
-    int i;
-
-    i = 0;
-    while (strs[i])
-        i++;
-    return (i);
-}
+#include "../../include/minishell.h"
 
 static int    option(char  **cmd)
 {

@@ -1,14 +1,4 @@
-#include "minishell.h"
-
-static int ft_strslen(char **strs)
-{
-    int i;
-
-    i = 0;
-    while (strs[i])
-        i++;
-    return (i);
-}
+#include "../include/minishell.h"
 
 /* Check if the cmd in the node is a builtin */
 int check_builtins(t_data *data)
@@ -19,8 +9,8 @@ int check_builtins(t_data *data)
         data->isbuiltin = true;
     else if (!ft_strncmp(data->node->cmd[0], "pwd", 3))
         data->isbuiltin = true;
-    else if (!ft_strncmp(data->node->cmd[0], "env", 3))
-        data->isbuiltin = true;
+    // else if (!ft_strncmp(data->node->cmd[0], "env", 3))
+    //     data->isbuiltin = true;
     return (0);
 }
 

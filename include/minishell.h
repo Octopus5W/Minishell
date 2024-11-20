@@ -1,7 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include "readline/readline.h"
 # include <dirent.h>
 # include <readline/history.h>
@@ -11,6 +11,7 @@
 # include <string.h>
 # include <sys/errno.h>
 # include <sys/types.h>
+# include <sys/wait.h>
 # include <unistd.h>
 # define BUFSIZE 1024;
 
@@ -49,12 +50,16 @@ typedef struct s_data
 int						init(t_data *data, char **env);
 void					fake_parser(t_data *data);
 int						echo(char **cmd);
-void					execution_cmd(char **env, char **s);
+int						execution_cmd(t_data *data);
+void					builtins(t_data *data);
+int    echo(char **cmd);
+
 /* UTILS */
 char					**ft_split(char const *s, char c);
 char					*ft_substr(char const *s, unsigned int start,
 							size_t len);
 size_t					ft_strlen(const char *s);
 int						ft_strncmp(const char *s1, const char *s2, size_t n);
+int						ft_strslen(char **strs);
 
 #endif
