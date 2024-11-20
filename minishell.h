@@ -42,5 +42,8 @@ int quote_is_closed(const char *s);
 
 //tokenaizer
 t_token	*tokenaizer(char *cmd);
+t_token* token_delete(t_token *tokens);
+t_token	*token_add(t_token *tokens, t_token_type type, char *value);
+void token_free(t_token *tokens);
 
 #endif

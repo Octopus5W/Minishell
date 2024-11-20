@@ -22,6 +22,7 @@ void	token_free(t_token *tokens)
 	{
 		next = tokens->next;
 		free(tokens->value);
+		tokens->value = NULL;
 		free(tokens);
 		tokens = next;
 	}
@@ -48,6 +49,17 @@ t_token	*token_add(t_token *tokens, t_token_type type, char *value)
 		tokens = tokens->next;
 	tokens->next = new;
 	return (ptr);
+}
+
+t_token* token_delete(t_token *tokens)
+{
+	t_token *temp;
+	temp = tokens->next;
+	free(tokens->value);
+	free(tokens);
+	tokens->value = NULL;
+	tokens = temp;
+	return (tokens);
 }
 
 int	skip_quote(char *s)
