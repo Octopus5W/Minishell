@@ -17,25 +17,58 @@
 void    free_envdup(t_data *data, int i)
 {
     while (--i)
-        free(data->envdup[i]);
-    free(data->envdup);
+        free(data->env_array[i]);
+    free(data->env_array);
 }
 
-int duplicate_env(t_data *data, char **env)
+int env_array(t_data *data, char **env)
 {
     int i;
     int len;
 
     i = 0;
     len = ft_strslen(env);
-    data->envdup = malloc(sizeof(char *) * len + 1);
-    if (!data->envdup)
+    data->env_array = malloc(sizeof(char *) * len + 1);
+    if (!data->env_array)
         return (1);
     while (env[i])
     {
-        data->envdup[i] = ft_strdup(env[i]);
-        if (!data->envdup[i])
+        data->env_array[i] = ft_strdup(env[i]);
+        if (!data->env_array[i])
             return (free_envdup(data, i), 1);
+        i++;
+    }
+    return (0);
+}
+
+static void free_list(t_data *data)
+{
+    t_list  *next;
+
+    next = NULL;
+    while (data->env_list)
+    {
+        next = data->env_list->next;
+        free(data->env_list);
+        data->env_list = next;
+    }
+}
+
+// duplicate the env variables in a linked list
+static int env_list(t_data *data, char **env)
+{
+    int i;
+
+    i = 0;
+    data->env_list = ft_lstnew((char *)env[i++]);
+    if (!data->env_list)
+        return (1);
+    while (env[i])
+    {
+        data->env_list->next = ft_lstnew((char *)env[i]);
+        if (!data->env_list->next)
+            return (free_list(data), 1);
+        data->env_list = data->env_list->next;
         i++;
     }
     return (0);
@@ -44,7 +77,9 @@ int duplicate_env(t_data *data, char **env)
 int init(t_data *data, char **env)
 {
     //check_builtins(data);
-    if (duplicate_env(data, env))
+    if (env_list(data, env))
+        return (1);
+    if (env_array(data, env))
         return (1);
     return (0);
 }

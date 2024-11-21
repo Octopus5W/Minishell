@@ -13,6 +13,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
+
 # define BUFSIZE 1024;
 
 typedef struct s_data	t_data;
@@ -50,8 +51,9 @@ typedef struct s_ast
 
 typedef struct s_data
 {
-	char **envdup; // duplicate the env variables
-	t_ast *node;   // link to t_ast node
+	char **env_array; // duplicate the env variables
+	t_list *env_list; // env variable dup linked list
+	t_ast *node;     // link to t_ast node
 }						t_data;
 
 // syntax_checker
@@ -81,4 +83,5 @@ char					*ft_substr(char const *s, unsigned int start,
 size_t					ft_strlen(const char *s);
 int						ft_strncmp(const char *s1, const char *s2, size_t n);
 int						ft_strslen(char **strs);
+
 #endif
