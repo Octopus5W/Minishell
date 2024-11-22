@@ -1,5 +1,27 @@
 #include "../../include/minishell.h"
 
+int	skip_quote(char *s)
+{
+	int i;
+
+	i = 1;
+	while (s && s[i] && s[i] != s[0] && s[i - 1] != '\\')
+		i++;
+	return (i);
+}
+
+int skip_word(char *s)
+{
+		int i;
+
+	i = 0;
+	while (s && s[i] && s[i] != '<' && s[i] != '>' && s[i] != '|')
+		i++;
+	if (i != 0 && (s[i] == '<' || s[i] == '>' || s[i] == '|'))
+		i--;
+	return (i);
+}
+
 //initialize token with NULL values
 t_token	*token_init(t_token_type type, char *value)
 {
@@ -10,6 +32,7 @@ t_token	*token_init(t_token_type type, char *value)
 		return (NULL);
 	token->type = type;
 	token->value = value;
+	token->prev = NULL;
 	token->next = NULL;
 	return (token);
 }
@@ -20,6 +43,7 @@ void	token_free(t_token *tokens)
 
 	while (tokens && tokens->next)
 	{
+		tokens->prev = NULL;
 		next = tokens->next;
 		free(tokens->value);
 		tokens->value = NULL;
@@ -43,6 +67,7 @@ t_token	*token_add(t_token *tokens, t_token_type type, char *value)
 		return (NULL);
 	new->type = type;
 	new->value = value;
+	new->prev = tokens;
 	new->next = NULL;
 	ptr = tokens;
 	while (tokens->next)
@@ -51,37 +76,21 @@ t_token	*token_add(t_token *tokens, t_token_type type, char *value)
 	return (ptr);
 }
 
-t_token* token_delete(t_token *tokens)
+t_token* token_delete(t_token *token)
 {
-	t_token *temp;
-	temp = tokens->next;
-	free(tokens->value);
-	free(tokens);
-	tokens->value = NULL;
-	tokens = temp;
-	return (tokens);
-}
-
-int	skip_quote(char *s)
-{
-	int i;
-
-	i = 1;
-	while (s && s[i] && s[i] != s[0] && s[i - 1] != '\\')
-		i++;
-	return (i);
-}
-
-int skip_word(char *s)
-{
-		int i;
-
-	i = 0;
-	while (s && s[i] && s[i] != '<' && s[i] != '>' && s[i] != '|')
-		i++;
-	if (i != 0 && (s[i] == '<' || s[i] == '>' || s[i] == '|'))
-		i--;
-	return (i);
+	t_token *prev;
+	t_token *next;
+	free(token->value);
+	token->value = NULL;
+	prev = token->prev;
+	next = token->next;
+	free(token);
+	token = NULL;
+	if (prev)
+		prev->next = next;
+	if (next)
+		next->prev = prev;
+	return (next);
 }
 
 t_token*	tokenaizer(char *cmd)

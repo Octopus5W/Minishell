@@ -35,6 +35,7 @@ typedef struct s_token
 {
 	t_token_type		type;
 	char				*value;
+	struct s_token		*prev;
 	struct s_token		*next;
 }						t_token;
 
@@ -53,6 +54,7 @@ typedef struct s_data
 {
 	char **env_array; // duplicate the env variables
 	t_list *env_list; // env variable dup linked list
+	t_token *tokens;  // link to t_token node
 	t_ast *node;     // link to t_ast node
 }						t_data;
 
