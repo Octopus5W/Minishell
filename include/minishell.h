@@ -58,8 +58,20 @@ typedef struct s_data
 	t_ast *node;     // link to t_ast node
 }						t_data;
 
+// builtin
+void					builtins(t_data *data);
+int						echo(char **cmd);
+
+// env_var
+
+// execution
+int						execution_cmd(t_data *data);
+
 // syntax_checker
 int						quote_is_closed(const char *s);
+
+// parsing
+char **parse_token(t_token *tokens);
 
 // tokenaizer
 t_token					*tokenaizer(char *cmd);
@@ -68,15 +80,10 @@ t_token					*token_add(t_token *tokens, t_token_type type,
 							char *value);
 void					token_free(t_token *tokens);
 
+
 // init
 int						init(t_data *data, char **env);
 
-// builtin
-void					builtins(t_data *data);
-int						echo(char **cmd);
-
-// execution
-int						execution_cmd(t_data *data);
 
 // utils
 char					**ft_split(char const *s, char c);

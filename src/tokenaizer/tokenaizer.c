@@ -1,24 +1,40 @@
 #include "../../include/minishell.h"
 
+// skip quote et skip word ne fonctionne pas avec plusieurs "\" 
 int	skip_quote(char *s)
 {
 	int i;
-
+	int j;
 	i = 1;
-	while (s && s[i] && s[i] != s[0] && s[i - 1] != '\\')
+	while (s && s[i] && s[i] != s[0])
+	{
+		if (s[i] == '\\')
+		{
+			j = 1;
+			while (s[i] == '\\')
+				j++;
+			if (s[i] && j % 2 == 0 && s[i + 1] == s[0])
+				return (j + i + 1);
+			i += j;
+		}
 		i++;
+	}
 	return (i);
 }
 
 int skip_word(char *s)
 {
-		int i;
+	int i;
 
 	i = 0;
-	while (s && s[i] && s[i] != '<' && s[i] != '>' && s[i] != '|')
+	while (s && s[i] && s[i] != '<' && s[i] != '>' && s[i] != '|' && s[i] != ' ' && (s[i] < 7 || s[i] > 15) && s[i] != '\'' && s[i] != '\"')
 		i++;
-	if (i != 0 && (s[i] == '<' || s[i] == '>' || s[i] == '|'))
-		i--;
+	if (s[i] == '\'' || s[i] == '\"')
+		i += skip_quote(s + i);
+	if (i != 0 && (s[i] == '<' || s[i] == '>' || s[i] == '|' || s[i] == ' ' || (s[i] >= 7 && s[i] <= 15) || !s[i]))
+		return(i);
+	else
+		i += skip_word(s + i);
 	return (i);
 }
 
@@ -80,16 +96,17 @@ t_token* token_delete(t_token *token)
 {
 	t_token *prev;
 	t_token *next;
+
 	free(token->value);
 	token->value = NULL;
-	prev = token->prev;
-	next = token->next;
-	free(token);
-	token = NULL;
+	prev = token->prev; // token->next->prev
+	next = token->next; // token->next->next
 	if (prev)
 		prev->next = next;
 	if (next)
 		next->prev = prev;
+	free(token);
+	token = NULL;
 	return (next);
 }
 
@@ -97,46 +114,40 @@ t_token*	tokenaizer(char *cmd)
 {
 	t_token *tokens;
 	t_token	*check_malloc;
-	int i;
+	int cursor;
 	int j;
 
 	tokens = NULL;
-	i = 0;
-	while (cmd && cmd[i])
+	cursor = 0;
+	while (cmd && cmd[cursor])
 	{
-		if ((cmd[i] == '\'' || cmd[i] == '\"'))
-		{
-			j = skip_quote(cmd + i);
-			check_malloc = token_add(tokens, TOKEN_WORD, ft_substr(cmd + i, 0, j));
-			i += j;
-		}
-		else if (cmd[i] == '|')
+		if (cmd[cursor] == '|')
 			check_malloc = token_add(tokens, TOKEN_PIPE, NULL);
-		else if (cmd[i] == '<' && cmd[i + 1] == '<')
+		else if (cmd[cursor] == '<' && cmd[cursor + 1] == '<')
 		{
 			check_malloc = token_add(tokens, TOKEN_REDIR_HEREDOC, NULL);
-			i++;
+			cursor++;
 		}
-		else if (cmd[i] == '>' && cmd[i + 1] == '>' && i + 1)
+		else if (cmd[cursor] == '>' && cmd[cursor + 1] == '>' && cursor + 1)
 		{
 			check_malloc = token_add(tokens, TOKEN_REDIR_APPEND, NULL);
-			i++;
+			cursor++;
 		}
-		else if (cmd[i] == '<')
+		else if (cmd[cursor] == '<')
 			check_malloc = token_add(tokens, TOKEN_REDIR_IN, NULL);
-		else if (cmd[i] == '>')
+		else if (cmd[cursor] == '>')
 			check_malloc = token_add(tokens, TOKEN_REDIR_OUT, NULL);
-		else
+		else if (cmd[cursor] != ' ' && (cmd[cursor] < 7 || cmd[cursor] > 15)) 
 		{
-			j = skip_word(cmd + i);
-			check_malloc = token_add(tokens, TOKEN_WORD, ft_substr(cmd + i, 0, j));
-			i += j;
+			j = skip_word(cmd + cursor);
+			check_malloc = token_add(tokens, TOKEN_WORD, ft_substr(cmd + cursor, 0, j));
+			cursor += j - 1;
 		}
-		if (!check_malloc)
+		cursor++;
+		if (!check_malloc && cmd[cursor - 1] != ' ' &&  (cmd[cursor - 1] < 7 || cmd[cursor] > 15))
 			return (token_free(tokens), NULL);
-		else
+		else if (!tokens)
 			tokens = check_malloc;
-		i++;
 	}
 	return (tokens);
 }

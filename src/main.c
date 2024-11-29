@@ -3,25 +3,44 @@
 int main ()
 {
 	t_token* tokens/*, *tokensdeux*/;
-	char *s = "echo -n >lol | echo <lol -n <mdr";
+	t_token* ptr;
+	char *s = "echo -n>lol|echo<lol -n<mdr";
 	int i = 0;
 
 	if (!quote_is_closed(s))
 		return (0);
-	tokens = tokenaizer(s);
-	// tokensdeux = tokens->next;
+	ptr = tokenaizer(s);
+	tokens = ptr;
 	while (tokens)
 	{
 		i++;
-		printf("Token %d:\ntype: %i\nvalue: %s\nnext: %p\n----------------------------------\n", i, tokens->type, tokens->value, tokens->next);
-		if (i%2 == 0)
-		{
-			tokens = token_delete(tokens);
-		}
-		else
-			tokens = tokens->next;
+		printf("Token %d:\ntype: %i\nvalue: <%s>\nnext: %p\n----------------------------------\n", i, tokens->type, tokens->value, tokens->next);
+		tokens = tokens->next;
 	}
-	i=0;
+	printf("before\n\n");
+	tokens = ptr;
+	i = 0;
+	// parse_token(tokens);
+	// printf("\n\n\n<PARSE_TOKEN>\n\n\n");
+	// while (tokens)
+	// {
+	// 	i++;
+	// 	printf("Token %d:\ntype: %i\nvalue: %s\nprev: %p\nnext: %p\n----------------------------------\n", i, tokens->type, tokens->value, tokens->prev, tokens->next);
+	// 	tokens = tokens->next;
+	// }
+	// tokensdeux = tokens->next;
+	// while (tokens)
+	// {
+	// 	i++;
+	// 	printf("Token %d:\ntype: %i\nvalue: %s\nnext: %p\n----------------------------------\n", i, tokens->type, tokens->value, tokens->next);
+	// 	if (i%2 == 0)
+	// 	{
+	// 		tokens = token_delete(tokens);
+	// 	}
+	// 	else
+	// 		tokens = tokens->next;
+	// }
+	// i=0;
 	// printf("\n\n\n");
 	// while (tokensdeux)
 	// {

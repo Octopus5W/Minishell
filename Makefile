@@ -3,7 +3,8 @@ NAME = minishell
 # Dossier des fichiers sources
 SRCS = src/main.c src/init.c \
        src/env_var/env_var.c src/execution/execution.c \
-       src/parsing/syntax_checker.c src/tokenaizer/tokenaizer.c
+       src/parsing/syntax_checker.c src/parsing/parse_token.c\
+	   src/tokenaizer/tokenaizer.c
 
 # Dossier des fichiers objets
 OBJ_DIR = obj
