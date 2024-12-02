@@ -1,4 +1,4 @@
-# my_minishell
+# Minishell
 
 
 * The source code is first split into smaller chunks called tokens through the process of lexical analysis. Lexical analysis is also called tokenization.
