@@ -24,52 +24,69 @@ int	actual_exec(char *path, char **cmd)
 	return (0);
 }
 
+int	check(char *str, char **cmd)
+{
+	char	*path;
+	char	*tmp;
+
+	path = ft_strjoin(str, "/");
+	if (!path)
+		return (0);
+	tmp = path;
+	path = ft_strjoin(tmp, cmd[0]);
+	if (!path)
+		return (free(tmp), 0);
+	if (!access(path, X_OK))
+	{
+		actual_exec(path, cmd);
+		return (free(tmp), free(path), 1);
+	}
+	free(path);
+	free(tmp);
+	return (0);
+}
+
 /* Exctract and concatene the line path to use it */
-int split_path(char *path, t_data *data)
+int	split_path(char *path, char **cmd)
 {
 	char	**strs;
 	int		i;
 
 	i = 0;
 	strs = ft_split(path, ':');
+	if (!strs)
+		return (1);
 	while (strs[i])
 	{
-		path = ft_strjoin(strs[i], "/");
-		path = ft_strjoin(path, *data->node->cmd);
-		if (!access(path, X_OK))
-			actual_exec(path, data->node->cmd);
+		if (check(strs[i], cmd))
+			break ;
 		i++;
 	}
+	free_array(strs, ft_strslen(strs));
 	return (0);
 }
 
-/* Find the line path in env */
-int find_path(t_data *data)
+int	find_path(t_data *data, char **cmd)
 {
-	char	*path;
-	int		i;
+	t_envlist	*current;
 
-	i = 0;
-	path = NULL;
-	while (data->envdup[i])
+	current = data->env_list;
+	while (current)
 	{
-		if (!ft_strncmp(data->envdup[i], "PATH=", 5))
+		if (!ft_strncmp("PATH", current->name, 5))
 		{
-			path = &data->envdup[i][5];
+			if (split_path(current->var, cmd))
+				return (1);
 			break ;
 		}
-		i++;
+		current = current->next;
 	}
-	if (split_path(path, data))
-        return (1);
 	return (0);
 }
 
-int	execution_cmd(t_data *data)
+int	execution_cmd(t_data *data, char **cmd)
 {
-	if (data->isbuiltin)
-		return (0); //builtins();
-    else
-        find_path(data);
-    return (0);
+	if (find_path(data, cmd))
+		return (1);
+	return (0);
 }

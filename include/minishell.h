@@ -4,6 +4,7 @@
 # include "../libft/libft.h"
 # include "readline/readline.h"
 # include <dirent.h>
+# include <fcntl.h>
 # include <readline/history.h>
 # include <stdbool.h>
 # include <stdio.h>
@@ -13,48 +14,86 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-# define BUFSIZE 1024;
 
-// typedef enum e_type
-// {
-// 	PIPE,
-// 	REDIR_IN,
-// 	REDIR_OUT
-// }						t_type;
+typedef struct s_data	t_data;
 
-// typedef struct s_token
-// {
-// 	char				**cmd;
-// 	t_type				type;
-// 	struct s_token		*prev;
-// 	struct s_token		*next;
-// }						t_token;
-
-typedef struct s_astnode
+typedef enum e_type
 {
-	char				**cmd;
-	// t_type				type;
-	char				**envdup;
-	struct s_astnode	*left;
-	struct s_astnode	*right;
-}						t_astnode;
+	WORD,
+	PIPE,
+	IN,
+	OUT,
+	APPEND,
+	HEREDOC,
+	VAR
+}						t_type;
+
+// structure for the environment variables list copy
+typedef struct s_envlist
+{
+	char *name; // only the name of the variable
+	char *var;  // only the content of the variable
+	char *raw;  // name + variable
+	struct s_envlist	*prev;
+	struct s_envlist	*next;
+}						t_envlist;
+
+typedef struct s_ast_node
+{
+	t_type				type;
+	char				*value;
+	struct s_ast_node	*left;
+	struct s_ast_node	*right;
+}						t_ast_node;
+
+typedef struct s_token
+{
+	t_type				type;
+	char				*value;
+	struct s_token		*prev;
+	struct s_token		*next;
+}						t_token;
 
 typedef struct s_data
 {
-	char				**envdup;
-	bool				isbuiltin;
-	char				*str;
-	t_astnode			*node;
+	char **env_array;    // duplicate the env variables
+	t_envlist *env_list; // environment variables list copy
 }						t_data;
 
+// init
 int						init(t_data *data, char **env);
-void					fake_parser(t_data *data);
-int						echo(char **cmd);
-int						execution_cmd(t_data *data);
-void					builtins(t_data *data);
-int    echo(char **cmd);
 
-/* UTILS */
+// ast
+int						build_ast(t_token *tokens);
+
+// environment variables
+int						env_list(t_data *data, char **env);
+int						env_array(t_data *data, char **env);
+t_envlist				*create_node(char *var);
+char					*extract_var(char *str);
+char					*extract_name(char *str);
+char					*env_expand(t_data *data, char *to_expand);
+t_envlist				*last_node(t_envlist *env_list);
+
+// builtins
+void					builtins(t_data *data);
+int						echo(char **cmd);
+int						export(t_data *data, char **cmd);
+int						unset(t_data *data, char **cmd);
+void					envv(t_data *data);
+
+// redirections
+int						redir_out(t_data *data, char **cmd, char *file);
+int						sh_pipe(t_data *data, char ***c);
+
+// execution
+int						execution_cmd(t_data *data, char **cmd);
+
+// free
+void					free_array(char **strs, int i);
+void					free_list(t_data *data);
+
+// utils
 char					**ft_split(char const *s, char c);
 char					*ft_substr(char const *s, unsigned int start,
 							size_t len);

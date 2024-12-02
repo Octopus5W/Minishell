@@ -11,11 +11,11 @@ int	pwd(char **cmd)
 	return (0);
 }
 
-int	main(void)
-{
-	char **cmd;
+// int	main(void)
+// {
+// 	char **cmd;
 
-	cmd = malloc(sizeof(char *) * 1);
-	cmd[0] = ft_strdup("pwd");
-	pwd(cmd);
-}
+// 	cmd = malloc(sizeof(char *) * 1);
+// 	cmd[0] = ft_strdup("pwd");
+// 	pwd(cmd);
+// }

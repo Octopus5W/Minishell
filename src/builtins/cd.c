@@ -36,13 +36,13 @@ int	cd(char **cmd)
 	return (0);
 }
 
-int	main(void)
-{
-	char **cmd;
+// int	main(void)
+// {
+// 	char **cmd;
 
-	cmd = malloc(sizeof(char *) * 1);
-	memset(cmd, 0, sizeof(char *));
-	cmd[0] = ft_strdup("cd");
-	cmd[1] = ft_strdup("test/");
-	cd(cmd);
-}
+// 	cmd = malloc(sizeof(char *) * 1);
+// 	memset(cmd, 0, sizeof(char *));
+// 	cmd[0] = ft_strdup("cd");
+// 	cmd[1] = ft_strdup("test/");
+// 	cd(cmd);
+// }

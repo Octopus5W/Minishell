@@ -1,44 +1,22 @@
 #include "../../include/minishell.h"
 
-char	*find_var(t_data *data, char *str)
+char	*env_expand(t_data *data, char *to_expand)
 {
-	char	*var;
-	int		i;
+	t_envlist	*current;
+	char		*var_name;
 
-	i = 0;
-	var = NULL;
-	while (data->envdup[i])
-	{
-		if (!ft_strncmp(str + 1, data->envdup[i], ft_strlen(str + 1)))
-			var = ft_substr(data->envdup[i], ft_strlen(str),
-					ft_strlen(data->envdup[i]) - ft_strlen(str));
-		i++;
-	}
-	return (var);
-}
-
-char	*expand_envar(t_data *data, char *var)
-{
-	int		i;
-	char	**tmp;
-
-	i = 0;
-	tmp = ft_split(data->str, ' ');
-	if (!tmp)
+	current = data->env_list;
+	var_name = ft_substr(to_expand, 1, ft_strlen(to_expand) - 1);
+	if (!var_name)
 		return (NULL);
-	if (ft_strslen(tmp) > 1)
+	while (current->next)
 	{
-		while (tmp[i])
-		{
-			if (tmp[i][0] == '$')
-			{
-				var = find_var(data, tmp[i]);
-				break ;
-			}
-			i++;
-		}
+		if (!ft_strncmp(current->name, var_name, ft_strlen(var_name)))
+			return (free(var_name), current->var);
+		current = current->next;
 	}
-	return (var);
+	free(var_name);
+	return (NULL);
 }
 
 // int	main(int ac, char **av, char **env)
