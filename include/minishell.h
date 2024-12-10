@@ -14,69 +14,59 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-# define BUFSIZE 1024;
-
 typedef struct s_data	t_data;
 
-// enum for the type of node in tokenization and the AST
-typedef enum e_token_type
+typedef enum e_type
 {
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIR_IN,
-	TOKEN_REDIR_OUT,
-	TOKEN_REDIR_APPEND,
-	TOKEN_REDIR_HEREDOC,
-	TOKEN_ENV_VAR
-}						t_token_type;
+	WORD,
+	PIPE,
+	IN,
+	OUT,
+	APPEND,
+	HEREDOC,
+	VAR
+}						t_type;
 
-// token structure for tokenization
 typedef struct s_token
 {
-	t_token_type		type;
+	t_type				type;
 	char				*value;
 	struct s_token		*prev;
 	struct s_token		*next;
 }						t_token;
 
-// structure for the AST branch
 typedef struct s_ast
 {
-	t_token_type		type;
-	char				*cmd;
+	t_type				type;
 	char				**args;
-	bool				isbuiltin;
-	struct s_ast_node	*left;
-	struct s_ast_node	*right;
+	bool				is_builtin;
+	struct s_ast		*left;
+	struct s_ast		*right;
 }						t_ast;
-
-typedef struct s_data
-{
-	char **env_array; // duplicate the env variables
-	t_list *env_list; // env variable dup linked list
-	t_token *tokens;  // link to t_token node
-	t_ast *node;     // link to t_ast node
-}						t_data;
 
 // syntax_checker
 int						quote_is_closed(const char *s);
 
-// tokenaizer
-t_token					*tokenaizer(char *cmd);
+// lexer
+t_token					*lexer(char *cmd);
 t_token					*token_delete(t_token *tokens);
-t_token					*token_add(t_token *tokens, t_token_type type,
-							char *value);
+t_token					*token_add(t_token *tokens, t_type type, char *value);
 void					token_free(t_token *tokens);
 
-// init
-int						init(t_data *data, char **env);
+// parser
+t_ast					*parse_tokens(t_token **tokens);
+t_ast					*parse_pipeline(t_token **tokens);
+t_ast					*parse_redirection(t_token **tokens);
+t_ast					*create_file_node(t_token *token);
+t_ast					*parse_command(t_token **tokens);
 
-// builtin
-void					builtins(t_data *data);
-int						echo(char **cmd);
-
-// execution
-int						execution_cmd(t_data *data);
+t_ast					*new_ast_node(t_type type);
+void					free_ast(t_ast *node);
+t_ast					*create_and_link_redirection(t_token **tokens,
+							t_token *tmp);
+int						count_command_arguments(t_token *current);
+void					fill_command_arguments(t_ast *command_node,
+							t_token **tokens, int arg_count);
 
 // utils
 char					**ft_split(char const *s, char c);
