@@ -1,138 +1,114 @@
 #include "../../include/minishell.h"
 
-int	skip_quote(char *s)
+t_token	*lstlast(t_token *lst)
 {
-	int	i;
-
-	i = 1;
-	while (s && s[i] && s[i] != s[0] && s[i - 1] != '\\')
-		i++;
-	return (i);
-}
-
-int	skip_word(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s && s[i] && s[i] != '<' && s[i] != '>' && s[i] != '|')
-		i++;
-	if (i != 0 && (s[i] == '<' || s[i] == '>' || s[i] == '|'))
-		i--;
-	return (i);
-}
-
-t_token	*token_init(t_type type, char *value)
-{
-	t_token	*token;
-
-	token = ft_calloc(1, sizeof(t_token));
-	if (!token)
-		return (NULL);
-	token->type = type;
-	token->value = ft_strdup(value); // have to dup here
-	return (token);
-}
-
-void	token_free(t_token *tokens)
-{
-	t_token	*next;
-
-	while (tokens && tokens->next)
+	while (lst)
 	{
-		tokens->prev = NULL;
-		next = tokens->next;
-		free(tokens->value);
-		tokens->value = NULL;
-		free(tokens);
-		tokens = next;
+		if (!lst->next)
+			return (lst);
+		lst = lst->next;
 	}
+	return (lst);
 }
 
-t_token	*token_add(t_token *tokens, t_type type, char *value)
+t_token	*pipe_token(void)
 {
-	t_token	*new;
-	t_token	*ptr;
+	t_token	*pipe_token;
 
-	if (!tokens)
-		return (token_init(type, value));
-	if (!tokens)
+	pipe_token = ft_calloc(1, sizeof(t_token));
+	if (!pipe_token)
 		return (NULL);
-	new = ft_calloc(1, sizeof(t_token));
-	if (!new)
-		return (NULL);
-	new->type = type;
-	new->value = value;
-	new->prev = tokens;
-	ptr = tokens;
-	while (tokens->next)
-		tokens = tokens->next;
-	tokens->next = new;
-	return (ptr);
+	pipe_token->value = "|";
+	pipe_token->type = PIPE;
+	return (pipe_token);
 }
 
-t_token	*token_delete(t_token *token)
+t_token	*in_token(void)
 {
-	t_token	*prev;
-	t_token	*next;
+	t_token	*in_token;
 
-	free(token->value);
-	token->value = NULL;
-	prev = token->prev;
-	next = token->next;
-	free(token);
-	token = NULL;
-	if (prev)
-		prev->next = next;
-	if (next)
-		next->prev = prev;
-	return (next);
+	in_token = ft_calloc(1, sizeof(t_token));
+	if (!in_token)
+		return (NULL);
+	in_token->value = "<";
+	in_token->type = IN;
+	return (in_token);
 }
 
-t_token	*lexer(char *cmd)
+t_token	*out_token(void)
+{
+	t_token	*out_token;
+
+	out_token = ft_calloc(1, sizeof(t_token));
+	if (!out_token)
+		return (NULL);
+	out_token->value = ">";
+	out_token->type = OUT;
+	return (out_token);
+}
+
+t_token	*heredoc_token(void)
+{
+	t_token	*heredoc_token;
+
+	heredoc_token = ft_calloc(1, sizeof(t_token));
+	if (!heredoc_token)
+		return (NULL);
+	heredoc_token->value = "<<";
+	heredoc_token->type = HEREDOC;
+	return (heredoc_token);
+}
+
+t_token	*append_token(void)
+{
+	t_token	*append_token;
+
+	append_token = ft_calloc(1, sizeof(t_token));
+	if (!append_token)
+		return (NULL);
+	append_token->value = ">>";
+	append_token->type = APPEND;
+	return (append_token);
+}
+
+void	add_token(t_token **tokens, t_token *new_token)
+{
+	t_token	*last;
+
+	last = lstlast(*tokens);
+	if (!last)
+		*tokens = new_token;
+	else
+		last->next = new_token;
+}
+
+t_token	*lexer(char *input)
 {
 	t_token	*tokens;
-	t_token	*check_malloc;
 	int		i;
-	int		j;
+	int		input_len;
 
-	tokens = NULL;
 	i = 0;
-	while (cmd && cmd[i])
+	input_len = (int)ft_strlen(input) - 1;
+	while (input[i])
 	{
-		if ((cmd[i] == '\'' || cmd[i] == '\"'))
-		{
-			j = skip_quote(cmd + i);
-			check_malloc = token_add(tokens, WORD, ft_substr(cmd + i, 0, j));
-			i += j;
-		}
-		else if (cmd[i] == '|')
-			check_malloc = token_add(tokens, PIPE, "|");
-		else if (cmd[i] == '<' && cmd[i + 1] == '<')
-		{
-			check_malloc = token_add(tokens, HEREDOC, "<<");
-			i++;
-		}
-		else if (cmd[i] == '>' && cmd[i + 1] == '>' && i + 1)
-		{
-			check_malloc = token_add(tokens, APPEND, ">>");
-			i++;
-		}
-		else if (cmd[i] == '<')
-			check_malloc = token_add(tokens, IN, "<");
-		else if (cmd[i] == '>')
-			check_malloc = token_add(tokens, OUT, ">");
-		else
-		{
-			j = skip_word(cmd + i);
-			check_malloc = token_add(tokens, WORD, ft_substr(cmd + i, 0, j));
-			i += j;
-		}
-		if (!check_malloc)
-			return (token_free(tokens), NULL);
-		else
-			tokens = check_malloc;
+		if (input[i] == '|')
+			add_token(&tokens, pipe_token());
+		if (i + 1 <= input_len)
+			if (input[i] == '>' && !isspace(input[i + 1]))
+				add_token(&tokens, out_token());
+		if (i + 1 <= input_len)
+			if (input[i] == '<' && input[i + 1] == '<')
+				add_token(&tokens, heredoc_token());
+		if (i + 1 <= input_len)
+			if (input[i] == '<' && isspace(input[i + 1]))
+				add_token(&tokens, in_token());
+		if (i + 1 <= input_len)
+			if (input[i] == '>' && input[i + 1] == '>')
+				add_token(&tokens, append_token());
 		i++;
 	}
-	return (tokens);
+	return (0);
 }
+
+// date | wc -c >file

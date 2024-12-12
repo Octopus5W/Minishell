@@ -4,10 +4,13 @@ t_ast	*new_ast_node(t_type type)
 {
 	t_ast		*node;
 
-	node = ft_calloc(1, sizeof(t_ast));
+	node = malloc(sizeof(t_ast));
 	if (!node)
 		return (NULL);
 	node->type = type;
+	node->args = NULL;
+	node->left = NULL;
+	node->right = NULL;
 	return (node);
 }
 
@@ -27,9 +30,9 @@ void	free_ast(t_ast *node)
 		}
 		free(node->args);
 	}
-	//free_ast(node->left);
-	//free_ast(node->right);
-	//free(node);
+	free_ast(node->left);
+	free_ast(node->right);
+	free(node);
 }
 
 t_ast	*create_and_link_redirection(t_token **tokens, t_token *tmp)
@@ -40,8 +43,8 @@ t_ast	*create_and_link_redirection(t_token **tokens, t_token *tmp)
 	*tokens = (*tokens)->next->next;
 	redirect_node->left = parse_redirection(tokens);
 	redirect_node->right = create_file_node(tmp->next);
-	//free(tmp->value);
-	//free(tmp);
+	free(tmp->value);
+	free(tmp);
 	return (redirect_node);
 }
 
@@ -65,14 +68,13 @@ void	fill_command_arguments(t_ast *command_node,
 	t_token	*tmp;
 
 	i = 0;
-	memset(&tmp, 0, sizeof(t_token));
 	while (i < arg_count)
 	{
 		command_node->args[i] = ft_strdup((*tokens)->value);
 		tmp = *tokens;
 		*tokens = (*tokens)->next;
-		//free(tmp->value);
-		//free(tmp);
+		free(tmp->value);
+		free(tmp);
 		i++;
 	}
 	command_node->args[arg_count] = NULL;

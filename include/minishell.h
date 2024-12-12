@@ -31,7 +31,6 @@ typedef struct s_token
 {
 	t_type				type;
 	char				*value;
-	struct s_token		*prev;
 	struct s_token		*next;
 }						t_token;
 
@@ -75,5 +74,6 @@ char					*ft_substr(char const *s, unsigned int start,
 size_t					ft_strlen(const char *s);
 int						ft_strncmp(const char *s1, const char *s2, size_t n);
 int						ft_strslen(char **strs);
+t_token	*lstlast(t_token *lst);
 
 #endif
