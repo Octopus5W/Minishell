@@ -8,32 +8,32 @@ t_ast	*new_ast_node(t_type type)
 	if (!node)
 		return (NULL);
 	node->type = type;
-	node->args = NULL;
+	node->command = NULL;
 	node->left = NULL;
 	node->right = NULL;
 	return (node);
 }
 
-void	free_ast(t_ast *node)
-{
-	int				i;
+// void	free_ast(t_ast *node)
+// {
+// 	int				i;
 
-	i = 0;
-	if (!node)
-		return ;
-	if (node->type == WORD && node->args)
-	{
-		while (node->args && node->args[i])
-		{
-			free(node->args[i]);
-			i++;
-		}
-		free(node->args);
-	}
-	free_ast(node->left);
-	free_ast(node->right);
-	free(node);
-}
+// 	i = 0;
+// 	if (!node)
+// 		return ;
+// 	if (node->type == WORD && node->command)
+// 	{
+// 		while (node->command && node->command[i])
+// 		{
+// 			free(node->command[i]);
+// 			i++;
+// 		}
+// 		free(node->command);
+// 	}
+// 	free_ast(node->left);
+// 	free_ast(node->right);
+// 	free(node);
+// }
 
 t_ast	*create_and_link_redirection(t_token **tokens, t_token *tmp)
 {
@@ -43,8 +43,8 @@ t_ast	*create_and_link_redirection(t_token **tokens, t_token *tmp)
 	*tokens = (*tokens)->next->next;
 	redirect_node->left = parse_redirection(tokens);
 	redirect_node->right = create_file_node(tmp->next);
-	free(tmp->value);
-	free(tmp);
+	//free(tmp->lexeme);
+	//free(tmp);
 	return (redirect_node);
 }
 
@@ -61,21 +61,63 @@ int	count_command_arguments(t_token *current)
 	return (arg_count);
 }
 
-void	fill_command_arguments(t_ast *command_node,
-	t_token **tokens, int arg_count)
-{
-	int		i;
-	t_token	*tmp;
+// void	fill_command_arguments(t_ast *command_node,
+// 	t_token **tokens, int arg_count)
+// {
+// 	int		i;
+// 	t_token	*tmp;
 
-	i = 0;
-	while (i < arg_count)
-	{
-		command_node->args[i] = ft_strdup((*tokens)->value);
-		tmp = *tokens;
-		*tokens = (*tokens)->next;
-		free(tmp->value);
-		free(tmp);
-		i++;
-	}
-	command_node->args[arg_count] = NULL;
+// 	i = 0;
+// 	while (i < arg_count)
+// 	{
+// 		command_node->command[i] = ft_strdup((*tokens)->lexeme);
+// 		tmp = *tokens;
+// 		*tokens = (*tokens)->next;
+// 		free(tmp->lexeme);
+// 		free(tmp);
+// 		i++;
+// 	}
+// 	command_node->command[arg_count] = NULL;
+// }
+
+void	fill_command_arguments(t_ast *command_node, t_token **tokens, int arg_count)
+{
+    int		i;
+    //t_token	*tmp;
+
+    i = 0;
+    while (i < arg_count)
+    {
+        command_node->command[i] = ft_strdup((*tokens)->lexeme);
+        //tmp = *tokens;
+        *tokens = (*tokens)->next;
+        //free(tmp);
+        i++;
+    }
+    command_node->command[arg_count] = NULL;
+}
+
+void	print_ast(t_ast *node, int depth)
+{
+    int i;
+
+    if (!node)
+        return;
+
+    for (i = 0; i < depth; i++)
+        printf("  ");
+    printf("Node type: %s\n", get_token_type_name(node->type));
+
+    if (node->command)
+    {
+        for (i = 0; node->command[i]; i++)
+        {
+            for (int j = 0; j < depth; j++)
+                printf("  ");
+            printf("Command: %s\n", node->command[i]);
+        }
+    }
+
+    print_ast(node->left, depth + 1);
+    print_ast(node->right, depth + 1);
 }

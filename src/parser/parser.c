@@ -7,8 +7,8 @@ t_ast	*parse_command(t_token **tokens)
 
 	command_node = new_ast_node(WORD);
 	arg_count = count_command_arguments(*tokens);
-	command_node->args = malloc(sizeof(char *) * (arg_count + 1));
-	if (!command_node->args)
+	command_node->command = malloc(sizeof(char *) * (arg_count + 1));
+	if (!command_node->command)
 		return (NULL);
 	fill_command_arguments(command_node, tokens, arg_count);
 	return (command_node);
@@ -22,17 +22,17 @@ t_ast	*create_file_node(t_token *token)
 	if (!node)
 		return (NULL);
 	node->type = token->type;
-	node->args = malloc(sizeof(char *) * 2);
-	if (!node->args)
+	node->command = malloc(sizeof(char *) * 2);
+	if (!node->command)
 	{
-		free(node);
+		//free(node);
 		return (NULL);
 	}
-	node->args[0] = token->value;
-	node->args[1] = NULL;
+	node->command[0] = token->lexeme;
+	node->command[1] = NULL;
 	node->left = NULL;
 	node->right = NULL;
-	free(token);
+	//free(token);
 	return (node);
 }
 
@@ -58,7 +58,7 @@ t_ast	*parse_redirection(t_token **tokens)
 			(*tokens)->next = next_token->next->next;
 			redirect_node->left = parse_redirection(&tmp);
 			redirect_node->right = create_file_node((next_token->next));
-			return (free(next_token->value), free(next_token), redirect_node);
+			return (/*free(next_token->lexeme), free(next_token),*/ redirect_node);
 		}
 		*tokens = next_token;
 	}
@@ -81,8 +81,8 @@ t_ast	*parse_pipeline(t_token **tokens)
 			(*tokens)->next = NULL;
 			pipe_node->left = parse_redirection(&tmp);
 			pipe_node->right = parse_pipeline(&(next_token->next));
-			free(next_token->value);
-			free(next_token);
+			//free(next_token->lexeme);
+			//free(next_token);
 			return (pipe_node);
 		}
 		*tokens = next_token;

@@ -1,7 +1,8 @@
 NAME = minishell
 
 SRCS = src/main.c \
-    src/lexer/lexer.c src/parser/parser.c src/parser/utils_parser.c
+    src/lexer/lexer.c src/lexer/tmp_functions.c \
+	src/parser/parser.c src/parser/utils_parser.c 
 
 OBJ_DIR = obj
 

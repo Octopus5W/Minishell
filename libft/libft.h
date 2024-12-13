@@ -84,6 +84,7 @@ void				ft_putnbr_base(int nbr, const char *base);
 char				*ft_strndup(const char *s1, size_t n);
 char				*ft_strncpy(char *dest, const char *src, size_t n);
 int					ft_strslen(char **strs);
+int 				ft_charcmp(char c1, char c2);
 
 /* ft_printf */
 int					ft_printf(const char *s, ...);
