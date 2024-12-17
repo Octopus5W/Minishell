@@ -92,7 +92,7 @@ t_token	*token_add(t_token *tokens, t_token_type type, char *value)
 	return (ptr);
 }
 
-t_token* token_delete(t_token *token)
+t_token* token_delete(t_token *token) // no need
 {
 	t_token *prev;
 	t_token *next;
