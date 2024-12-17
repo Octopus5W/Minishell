@@ -1,8 +1,11 @@
 NAME = minishell
 
 SRCS = src/main.c \
+	src/init/duplicate_env.c \
     src/lexer/lexer.c src/lexer/tmp_functions.c \
-	src/parser/parser.c src/parser/utils_parser.c 
+	src/parser/parser.c src/parser/utils_parser.c \
+	src/execution/execution.c src/execution/command.c \
+	src/builtins/echo.c
 
 OBJ_DIR = obj
 

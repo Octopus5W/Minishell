@@ -1,17 +1,18 @@
 #include "../include/minishell.h"
 
-int	main(void)
+int	main(int argc, char *argv[], char **env)
 {
 	char	*line;
-	t_token	*tokens;
-	t_ast	*ast;
+	t_data	data;
 
-	tokens = NULL;
-	ast = NULL;
+	(void)argc;
+	(void)argv;
+
 	line = "echo hello";
-	tokens = lexer(line);
-	print_tokens(&tokens);
-	ast = parse_tokens(&tokens);
-	print_ast(ast, 0);
+	if (duplicate_env(&data, env))
+		return (1);
+	data.tokens = lexer(line);
+	data.ast = parse_tokens(&data.tokens);
+	execution(&data, data.ast);
 	return (0);
 }
