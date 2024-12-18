@@ -5,7 +5,8 @@ SRCS = src/main.c \
     src/lexer/lexer.c src/lexer/tmp_functions.c \
 	src/parser/parser.c src/parser/utils_parser.c \
 	src/execution/execution.c src/execution/command.c \
-	src/builtins/echo.c
+	src/builtins/echo.c src/builtins/pwd.c src/builtins/env.c src/builtins/export.c \
+	src/builtins/unset.c src/builtins/cd.c
 
 OBJ_DIR = obj
 

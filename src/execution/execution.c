@@ -17,7 +17,7 @@ int	execution_pipe(t_data *data, t_ast *left, t_ast *right)
 		close(fd[0]);
 		close(fd[1]);
 		command(data, left->command);
-        exit(1);
+		exit(1);
 	}
 	pid2 = fork();
 	if (pid2 < 0)
@@ -28,7 +28,7 @@ int	execution_pipe(t_data *data, t_ast *left, t_ast *right)
 		close(fd[0]);
 		close(fd[1]);
 		command(data, right->command);
-        exit(1);
+		exit(1);
 	}
 	close(fd[0]);
 	close(fd[1]);
@@ -37,25 +37,51 @@ int	execution_pipe(t_data *data, t_ast *left, t_ast *right)
 	return (0);
 }
 
+// int	execution(t_data *data, t_ast *ast)
+// {
+// 	t_ast *head;
+// 	t_ast *right;
+
+// 	head = ast;
+// 	right = head->right;
+// 	if (head->type == PIPE)
+// 	{
+// 		if (execution_pipe(data, head->left, right))
+// 			return (1);
+// 		if (right->type == PIPE)
+// 			execution(data, right);
+// 		// if (head->right->type == PIPE)
+// 		//     execution(data, head->right);
+// 	}
+// 	else
+// 	{
+// 			command(data, head->command);
+// 	}
+// 	return (0);
+// }
+
 int	execution(t_data *data, t_ast *ast)
 {
-	t_ast *head;
+	t_ast *current;
+	t_ast *left;
 	t_ast *right;
 
-	head = ast;
-	right = head->right;
-	if (head->type == PIPE)
+	current = ast;
+	while (current)
 	{
-		if (execution_pipe(data, head->left, right))
-			return (1);
-		if (right->type == PIPE)
-			execution(data, right);
-		// if (head->right->type == PIPE)
-		//     execution(data, head->right);
-	}
-	else
-	{
-	    command(data, head->command);
+		left = current->left;
+		right = current->right;
+		if (current->type == PIPE)
+		{
+			if (execution_pipe(data, left, right))
+				return (1);
+			current = right;
+		}
+		else
+		{
+			command(data, current->command);
+			break ;
+		}
 	}
 	return (0);
 }

@@ -202,8 +202,32 @@ static int	external_command(t_data *data, char **cmd)
 int	command(t_data *data, char **cmd)
 {
 	if (ft_strcmp(cmd[0], "echo"))
+	{
 		if (echo(cmd))
 			return (1);
+	}
+	else if (ft_strcmp(cmd[0], "pwd"))
+	{
+		if (pwd())
+			return (1);
+	}
+	else if (ft_strcmp(cmd[0], "env"))
+		env(data->env_list);
+	else if (ft_strcmp(cmd[0], "export"))
+	{
+		if (export(data, cmd))
+			return (1);
+	}
+	else if (ft_strcmp(cmd[0], "unset"))
+	{
+		if (unset(data, cmd))
+			return (1);
+	}
+	else if (ft_strcmp(cmd[0], "cd"))
+	{
+		if (cd(cmd))
+			return (1);
+	}
 	else 
 		if (external_command(data, cmd))
 			return (1);

@@ -61,6 +61,7 @@ typedef struct s_data
 
 // INIT
 int					duplicate_env(t_data *data, char **env);
+t_env				*create_node(char *var);
 
 // LEXER
 t_token				*lexer(char *cmd);
@@ -90,6 +91,11 @@ int					command(t_data *data, char **cmd);
 
 // BUILTINS
 int					echo(char **cmd);
+int					pwd(void);
+void				env(t_env *env_list);
+int					export(t_data *data, char **cmd);
+int					unset(t_data *data, char **cmd);
+int					cd(char **cmd);
 
 // utils
 char				**ft_split(char const *s, char c);

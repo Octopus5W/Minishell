@@ -8,7 +8,13 @@ int	main(int argc, char *argv[], char **env)
 	(void)argc;
 	(void)argv;
 
-	line = "echo hello";
+	line = "cd test";
+	if (duplicate_env(&data, env))
+		return (1);
+	data.tokens = lexer(line);
+	data.ast = parse_tokens(&data.tokens);
+	execution(&data, data.ast);
+	line = "pwd";
 	if (duplicate_env(&data, env))
 		return (1);
 	data.tokens = lexer(line);
